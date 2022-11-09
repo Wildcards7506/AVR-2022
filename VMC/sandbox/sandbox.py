@@ -55,13 +55,7 @@ class Sandbox(MQTTModule):
         logger.debug(f"Velocity information: {v_ms} m/s")
     
     def handle_visible_tag(self, data: dict) -> None:
-        tagId = data["id"]
-        if (tagId == 1):
-            self.setLed([255,255,0,0])
-        elif (tagId == 2):
-            self.setLed([255,0,255,0])
-        elif (tagId == 3):
-            self.setLed([255, 0, 0, 255])
+        self.setLed([255, 0, 0, 255])
 
     def setLed(self, color: Tuple[int, int, int, int]) -> None:
         data = {"wrgb": color}
