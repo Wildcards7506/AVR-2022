@@ -55,7 +55,7 @@ class Sandbox(MQTTModule):
         logger.debug(f"Velocity information: {v_ms} m/s")
     
     def handle_visible_tag(self, data: dict) -> None:
-        self.setLed([255, 0, 0, 255])
+        self.open_servo()
 
     def setLed(self, color: Tuple[int, int, int, int]) -> None:
         data = {"wrgb": color}
