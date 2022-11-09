@@ -9,7 +9,8 @@ from bell.avr.mqtt.payloads import AvrFcmVelocityPayload
 # and more useful.
 # https://loguru.readthedocs.io/en/stable/
 from loguru import logger
-
+from typing import Any, Callable, Dict, Tuple
+import json
 
 # This creates a new class that will contain multiple functions
 # which are known as "methods". This inherits from the MQTTModule class
@@ -33,6 +34,7 @@ class Sandbox(MQTTModule):
         # we're creating a dictionary of MQTT topics, and the methods we want to run
         # whenever a message arrives on that topic.
         self.topic_map = {"avr/fcm/velocity": self.show_velocity}
+        self.topic_map = {"avr/apriltags/selected": self.handle_visible_tag}
 
     # Here's an example of a custom message handler here.
     # This is what executes whenever a message is received on the "avr/fcm/velocity"
@@ -51,6 +53,20 @@ class Sandbox(MQTTModule):
         # variables into a string without needing to combine lots of strings together.
         # https://realpython.com/python-f-strings/#f-strings-a-new-and-improved-way-to-format-strings-in-python
         logger.debug(f"Velocity information: {v_ms} m/s")
+    
+    def handle_visible_tag(self, data: dict) -> None:
+        tagId = data["id"]
+        if (tagId == 1):
+            self.setLed([255,255,0,0])
+        elif (tagId == 2):
+            self.setLed([255,0,255,0])
+        elif (tagId == 3):
+            self.setLed([255, 0, 0, 255])
+
+    def setLed(self, color: Tuple[int, int, int, int]) -> None:
+        data = {"wrgb": color}
+        payload = json.dumps(data)
+        self.mqtt_client.publish(topic="avr/pcc/set_base_color", payload=payload)
 
     # Here is an example on how to publish a message to an MQTT topic to
     # perform an action
