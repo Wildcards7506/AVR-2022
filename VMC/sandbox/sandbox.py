@@ -10,7 +10,7 @@ from bell.avr.mqtt.payloads import AvrFcmVelocityPayload
 # https://loguru.readthedocs.io/en/stable/
 from loguru import logger
 from typing import Any, Callable, Dict, Tuple
-import json
+import json, time
 
 # This creates a new class that will contain multiple functions
 # which are known as "methods". This inherits from the MQTTModule class
@@ -55,24 +55,35 @@ class Sandbox(MQTTModule):
         logger.debug(f"Velocity information: {v_ms} m/s")
     
     def handle_visible_tag(self, data: dict) -> None:
-        self.open_servo()
+        self.pulseServo()
 
-    def setLed(self, color: Tuple[int, int, int, int]) -> None:
-        data = {"wrgb": color}
+    def pulseLed(self, color: Tuple[int, int, int, int], time: float) -> None:
+        data = {"wrgb": color, "time": time}
         payload = json.dumps(data)
         self.mqtt_client.publish(topic="avr/pcc/set_base_color", payload=payload)
 
     # Here is an example on how to publish a message to an MQTT topic to
     # perform an action
-    def open_servo(self) -> None:
+    def autoDrop(self) -> None:
         # It's super easy, use the `self.send_message` method with the first argument
         # as the topic, and the second argument as the payload.
         # Pro-tip, if you set `python.analysis.typeCheckingMode` to `basic` in you
         # VS Code preferences, you'll get a red underline if your payload doesn't
         # match the expected format for the topic.
+        self.pulseLed([0, 0, 255, 0], 0.1)
+        time.sleep(.2)
+        self.pulseLed([0, 0, 255, 0], 0.1)
+        time.sleep(.2)
+        self.pulseLed([0, 0, 255, 0], 0.1)
+        time.sleep(.2)
         self.send_message(
             "avr/pcm/set_servo_open_close",
             {"servo": 0, "action": "open"},
+        )
+        time.sleep(.25)
+        self.send_message(
+            "avr/pcm/set_servo_open_close",
+            {"servo": 0, "action": "close"}
         )
 
 
