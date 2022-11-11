@@ -67,6 +67,8 @@ class Sandbox(MQTTModule):
         # Pro-tip, if you set `python.analysis.typeCheckingMode` to `basic` in you
         # VS Code preferences, you'll get a red underline if your payload doesn't
         # match the expected format for the topic.
+        while(1 == 1):
+            logger.debug("I am here")
 
         self.pulseLed([0, 0, 255, 0], 0.1)
         time.sleep(0.2)
