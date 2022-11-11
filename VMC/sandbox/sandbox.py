@@ -69,29 +69,29 @@ class Sandbox(MQTTModule):
         # match the expected format for the topic.
         logger.debug("I am here")
 
-        ledPayload = AvrPcmSetTempColorPayload([0, 0, 255, 0], 0.1)
-        self.send_message("avr/pcc/set_temp_color", ledPayload)
-        time.sleep(0.2)
-        logger.debug("I am here2")
-        self.send_message("avr/pcc/set_temp_color", ledPayload)
-        time.sleep(0.2)
-        logger.debug("I am here3")
-        self.send_message("avr/pcc/set_temp_color", ledPayload)
-        time.sleep(0.2)
-        logger.debug("I am here4")
+        # ledPayload = AvrPcmSetTempColorPayload([0, 0, 255, 0], 0.1)
+        # self.send_message("avr/pcc/set_temp_color", ledPayload)
+        # time.sleep(0.2)
+        # logger.debug("I am here2")
+        # self.send_message("avr/pcc/set_temp_color", ledPayload)
+        # time.sleep(0.2)
+        # logger.debug("I am here3")
+        # self.send_message("avr/pcc/set_temp_color", ledPayload)
+        # time.sleep(0.2)
+        # logger.debug("I am here4")
         payload = AvrPcmSetServoOpenClosePayload(servo=0, action="open")
         self.send_message(
             "avr/pcm/set_servo_open_close",
             payload
         )
-        time.sleep(5)
-        logger.debug("I am here5")
-        payload.action = "close"
+        # time.sleep(5)
+        # logger.debug("I am here5")
+        # payload.action = "close"
         
-        self.send_message(
-            "avr/pcm/set_servo_open_close",
-            {payload}
-        )
+        # self.send_message(
+        #     "avr/pcm/set_servo_open_close",
+        #     {payload}
+        # )
 
 
 if __name__ == "__main__":
