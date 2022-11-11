@@ -3,7 +3,7 @@
 # It also helps us make sure that our code is sending the proper payload on a topic
 # and is receiving the proper payload as well.
 from bell.avr.mqtt.client import MQTTModule
-from bell.avr.mqtt.payloads import AvrFcmVelocityPayload, AvrPcmSetServoOpenClosePayload
+from bell.avr.mqtt.payloads import AvrFcmVelocityPayload, AvrPcmSetServoOpenClosePayload, AvrPcmSetTempColorPayload
 
 # This imports the third-party Loguru library which helps make logging way easier
 # and more useful.
@@ -69,24 +69,28 @@ class Sandbox(MQTTModule):
         # match the expected format for the topic.
         logger.debug("I am here")
 
-        self.pulseLed([0, 0, 255, 0], 0.1)
+        ledPayload = AvrPcmSetTempColorPayload([0, 0, 255, 0], 0.1)
+        self.pulseLed(ledPayload)
         time.sleep(0.2)
         logger.debug("I am here2")
-        self.pulseLed([0, 0, 255, 0], 0.1)
+        self.pulseLed(ledPayload)
         time.sleep(0.2)
         logger.debug("I am here3")
-        self.pulseLed([0, 0, 255, 0], 0.1)
+        self.pulseLed(ledPayload)
         time.sleep(0.2)
         logger.debug("I am here4")
+        payload = AvrPcmSetServoOpenClosePayload(servo=0, action="open")
         self.send_message(
             "avr/pcm/set_servo_open_close",
-            {"servo": 0, "action": "open"}
+            payload
         )
         time.sleep(5)
         logger.debug("I am here5")
+        payload.action = "close"
+        
         self.send_message(
             "avr/pcm/set_servo_open_close",
-            {"servo": 0, "action": "close"}
+            {payload}
         )
 
 
