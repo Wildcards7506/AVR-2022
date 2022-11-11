@@ -3,7 +3,7 @@
 # It also helps us make sure that our code is sending the proper payload on a topic
 # and is receiving the proper payload as well.
 from bell.avr.mqtt.client import MQTTModule
-from bell.avr.mqtt.payloads import AvrFcmVelocityPayload
+from bell.avr.mqtt.payloads import AvrFcmVelocityPayload, AvrPcmSetServoOpenClosePayload
 
 # This imports the third-party Loguru library which helps make logging way easier
 # and more useful.
@@ -33,8 +33,7 @@ class Sandbox(MQTTModule):
         # find the associated capital. However, this does not work in reverse. So here,
         # we're creating a dictionary of MQTT topics, and the methods we want to run
         # whenever a message arrives on that topic.
-        self.topic_map = {"avr/fcm/velocity": self.show_velocity}
-        self.topic_map = {"avr/apriltags/raw": self.handle_visible_tag}
+        self.topic_map = {"avr/apriltags/visible": self.handle_visible_tag}
 
     # Here's an example of a custom message handler here.
     # This is what executes whenever a message is received on the "avr/fcm/velocity"
@@ -58,9 +57,7 @@ class Sandbox(MQTTModule):
         self.pulseServo()
 
     def pulseLed(self, color: Tuple[int, int, int, int], time: float) -> None:
-        data = {"wrgb": color, "time": time}
-        payload = json.dumps(data)
-        self.mqtt_client.publish(topic="avr/pcc/set_base_color", payload=payload)
+        self.send_message("avr/pcc/set_temp_color", {"wrgb": color, "time": time})
 
     # Here is an example on how to publish a message to an MQTT topic to
     # perform an action
@@ -70,17 +67,18 @@ class Sandbox(MQTTModule):
         # Pro-tip, if you set `python.analysis.typeCheckingMode` to `basic` in you
         # VS Code preferences, you'll get a red underline if your payload doesn't
         # match the expected format for the topic.
+
         self.pulseLed([0, 0, 255, 0], 0.1)
-        time.sleep(.2)
+        time.sleep(0.2)
         self.pulseLed([0, 0, 255, 0], 0.1)
-        time.sleep(.2)
+        time.sleep(0.2)
         self.pulseLed([0, 0, 255, 0], 0.1)
-        time.sleep(.2)
+        time.sleep(0.2)
         self.send_message(
             "avr/pcm/set_servo_open_close",
-            {"servo": 0, "action": "open"},
+            {"servo": 0, "action": "open"}
         )
-        time.sleep(.25)
+        time.sleep(0.5)
         self.send_message(
             "avr/pcm/set_servo_open_close",
             {"servo": 0, "action": "close"}
