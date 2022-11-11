@@ -54,7 +54,7 @@ class Sandbox(MQTTModule):
         logger.debug(f"Velocity information: {v_ms} m/s")
     
     def handle_visible_tag(self, data: dict) -> None:
-        self.pulseServo()
+        self.autoDrop()
 
     def pulseLed(self, color: Tuple[int, int, int, int], time: float) -> None:
         self.send_message("avr/pcc/set_temp_color", {"wrgb": color, "time": time})
@@ -78,7 +78,7 @@ class Sandbox(MQTTModule):
             "avr/pcm/set_servo_open_close",
             {"servo": 0, "action": "open"}
         )
-        time.sleep(0.5)
+        time.sleep(5)
         self.send_message(
             "avr/pcm/set_servo_open_close",
             {"servo": 0, "action": "close"}
